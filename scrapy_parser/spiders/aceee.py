@@ -3,55 +3,60 @@ import scrapy
 class AceeeSpider(scrapy.Spider):
     name = "aceee"
     
+#    start_urls = [
+#            'https://aceee.org/news-blog'
+#            ]
+
     start_urls = [
-            'https://aceee.org/news-blog'
-            ]
+        'https://aceee.org/blog/2020/01/2019-and-2020-good-bad-and-ugly'
+    ]
+
+#    def parse(self, response):
+#        for article in response.css('.news-content-box h2'):
+#            yield {
+#                'title': article.css('a::text').get(),
+#                'link': article.css('a::attr(href)').get()
+#            }
+#
+#        next_page = response.css('li.next a::attr(href)').get()
+
+#        if next_page is not None:
+#            yield response.follow(next_page, callback=self.parse)
 
     def parse(self, response):
-        for article in response.css('.news-content-box h2'):
-            yield {
-                'title': article.css('a::text').get(),
-                'link': article.css('a::attr(href)').get()
-            }
+        text = " ".join(response.xpath('//article/div/div/div/div//text()').extract())
+        yield {
+            'title': response.xpath('//meta[@name="dcterms.title"]/@content').get(),
+            'pubdate': response.xpath('//meta[@name="dcterms.date"]/@content').get(),
+            'datestring': '2020-01-08',
+            'categories': response.xpath('//div[@class="pane-content"]/ul[@class="views-summary"]/li/a/text()').extract(),
+            'article_body': text,
+            'tags': response.xpath('//div[@class="views-field views-field-term-node-tid"]/span[@class="field-content"]/i/a/text()').extract(),
+            'external_links': response.xpath('//article/div/div/div/div//a/@href').extract()
+        }
 
-        next_page = response.css('li.next a::attr(href)').get()
+# заголовок: response.xpath("//meta[@name='dcterms.title']/@content").get()
 
-        if next_page is not None:
-            yield response.follow(next_page, callback=self.parse)
+# ссылка: response.xpath("//link[@rel='shortlink']/@href").get()
 
-#        page = response.url.split("/")[-1]
-#        filename = 'aceee-%s.html' % page
-#        with open(filename, 'wb') as f:
-#            f.write(response.body)
+# дата публикации: response.xpath("//meta[@name='dcterms.date']/@content").get()
 
+# категории: response.xpath('//div[@class="pane-content"]/ul[@class="views-summary"]/li/a/text()').extract()
+
+# текст статьи: response.xpath('//article/div/div/div/div//text()').extract()
+#   concat из массива в строку
+
+# теги: response.xpath('//div[@class="views-field views-field-term-node-tid"]/span[@class="field-content"]/i/a/text()').extract()
+
+# ссылки: response.xpath('//article/div/div/div/div//a/@href').extract()
+
+# ------------------------------------------------------------------------------
 
 # Заголовки
 # response.css('.news-content-box h2 a::text').getall()
-#'Local Governments Vote Resoundingly for Improved Efficiency in National Model Energy Code',
-#'2019 and 2020: The Good, the Bad, and the Ugly',
-#'Great Holiday News: Building Code to Make New Homes and Buildings More Energy Efficient  ',
-#' Trump Administration Defies 2007 Law and Ties Americans to Energy-Wasting Bulbs ',
-#'Can autonomous vehicles help cities address their climate goals? Only if they start planning now',
-#'First-of-Its-Kind Report Reveals Dramatic Energy Efficiency Impacts, Warns of Stalled Progress in Face of Climate Challenge',
-#'Tool allows communities to assess clean energy progress; Montgomery County calls it ‘innovative’',
-#'New Year’s countdown: Our top 10 blog posts of 2019',
-#'Twelve Strategies To Step Up Global Energy Efficiency',
-#'Companies control majority of US energy use, but most lack efficiency goals',
-#'Grid-interactive efficient buildings are the future, and utilities can help lead the way'
 
 # Ссылки
 # response.css('.news-content-box h2 a::attr(href)').getall()
-#'/press/2020/01/local-governments-vote-resoundingly',
-#'/blog/2020/01/2019-and-2020-good-bad-and-ugly',
-#'/press/2019/12/great-holiday-news-building-code',
-#'/press/2019/12/trump-administration-defies-2007-0',
-#'/blog/2019/12/can-autonomous-vehicles-help-cities-0',
-#'/press/2019/12/first-its-kind-report-reveals',
-#'/blog/2019/12/tool-allows-communities-assess-clean',
-#'/blog/2019/12/new-year-s-countdown-our-top-10-blog',
-#'/press/2019/12/twelve-strategies-step-global-energy',
-#'/blog/2019/11/companies-control-majority-us-energy',
-#'/blog/2019/11/grid-interactive-efficient-buildings']
 
 # Следующая страница
 # response.css('li.next a::attr(href)').get()

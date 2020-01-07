@@ -40,9 +40,9 @@ class AceeeSpider(scrapy.Spider):
             'pubdate': (response.xpath('//meta[@name="dcterms.date"]/@content').get()).split('T', 1)[0],
             'datestring': self.datestring,
             'categories': "",
-            'article_body': (" ".join(response.xpath('//article/div/div/div/div//text()[not(ancestor::*[@class="form-submit"])]').extract())).replace("\xa0", ""),
+            'article_body': (" ".join(response.xpath('//article[@class="node node-job clearfix"]/div/div/div/div//text()[not(ancestor::*[@class="form-submit"])]').extract())).replace("\xa0", ""),
             'tags': ", ".join(response.xpath('//div[@class="views-field views-field-term-node-tid"]/span[@class="field-content"]/i/a/text()').extract()),
-            'external_links': ", ".join(response.xpath('//article/div/div/div/div//a/@href').extract())
+            'external_links': ", ".join(response.xpath('//article[@class="node node-job clearfix"]/div/div/div/div//a/@href').extract())
         }
         with open('%s.csv'%self.name, 'a', newline='') as file:
             writer = csv.writer(file, delimiter=';')

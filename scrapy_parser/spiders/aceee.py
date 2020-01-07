@@ -14,9 +14,11 @@ class AceeeSpider(scrapy.Spider):
                 'link': article.css('a::attr(href)').get()
             }
 
-        yield {
-            'next_page': response.css('li.next a::attr(href)').get()
-        }
+        next_page = response.css('li.next a::attr(href)').get()
+
+        if next_page is not None:
+            yield response.follow(next_page, callback=self.parse)
+
 #        page = response.url.split("/")[-1]
 #        filename = 'aceee-%s.html' % page
 #        with open(filename, 'wb') as f:

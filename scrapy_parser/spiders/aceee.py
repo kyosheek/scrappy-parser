@@ -6,8 +6,7 @@ import scrapy
 class AceeeSpider(scrapy.Spider):
     name = "aceee"
     
-    now = datetime.now()
-    datestring = now.strftime("%Y-%m-%d")
+    datestring = datetime.now().strftime("%Y-%m-%d")
     
     start_urls = [
             'https://aceee.org/news-blog'
@@ -18,6 +17,7 @@ class AceeeSpider(scrapy.Spider):
         writer.writerow(['title', 'pubdate', 'datestring', 'categories', 'article_body', 'tags', 'external_links'])
             
     flag = False
+    
     def parse(self, response):
         
         hrefs = response.css('.news-content-box h2 a::attr(href)').getall()
